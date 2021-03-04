@@ -37,6 +37,9 @@
             >
               <v-card-title v-text="movie.title"></v-card-title>
             </v-img>
+            <div v-for="genreMV in movie.genre_ids" :key="genreMV" style="display:inline">
+                <v-chip style="margin:5px;">{{ genreMV.name }}</v-chip>
+            </div>
             <v-card-subtitle><i>Released date: {{ movie.release_date }}</i></v-card-subtitle>
             <v-card-actions>
               <v-btn
@@ -67,7 +70,7 @@
               <v-card class="mx-auto my-12">
                 <v-toolbar
                   dark
-                  color="primary"
+                  color="black"
                 >
                   <v-btn
                     icon
@@ -107,7 +110,7 @@
               <v-card class="mx-auto my-12">
                 <v-toolbar
                   dark
-                  color="primary"
+                  color="black"
                 >
                   <v-btn
                     icon
@@ -148,7 +151,9 @@
         },
         moviesId: null,
         trailer: null,
-        video : null
+        video : null,
+        genres: null,
+        newGenres: null
       }
     },
     computed: {
@@ -157,11 +162,42 @@
       })
     },
     mounted() {
+
       axios.get('https://api.themoviedb.org/3/movie/upcoming?api_key=94dcae6139c7f599099691ea345952f0&language=en-US&page=1')
       .then( response=> {
         this.movies = response.data.results;
         console.log(this.movies);
       })
+
+      axios.get('https://api.themoviedb.org/3/genre/movie/list?api_key=94dcae6139c7f599099691ea345952f0&language=en-US')
+      .then( response=> {
+        this.genres = response.data.genres;
+        console.log(this.genres);
+
+        this.movies.forEach(movie => {
+          movie.genre_ids.forEach(gr => {
+
+            let newGenres = []
+            this.genres.forEach(genre => {
+
+                if(genre.id==gr){
+                  newGenres.push({
+                    id: gr,
+                    name: genre.name
+                  })
+                  console.log(genre.id);
+                }
+            });
+            this.newGenres = newGenres;
+
+          });
+          
+          movie.genre_ids.splice(this.newGenres);
+
+        });
+        console.log(this.movies)
+      })
+
     },
     firebase: {
       movies: fire.database().ref('movies')

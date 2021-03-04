@@ -45,7 +45,7 @@
                 <v-card-subtitle><i>Released date: {{ movie.release_date }}</i></v-card-subtitle>
                 <v-card-actions>
                 <v-btn
-                    color="red"
+                    color="grey darken-4"
                     text
                     v-on:click="deleteMovie(movie.id)"
                 >
@@ -67,7 +67,7 @@
               <v-card class="mx-auto my-12">
                 <v-toolbar
                   dark
-                  color="primary"
+                  color="black"
                 >
                   <v-btn
                     icon
