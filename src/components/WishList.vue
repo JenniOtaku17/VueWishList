@@ -51,10 +51,37 @@
                 >
                 <v-icon>mdi-trash-can</v-icon>Remove
                 </v-btn>
+                <v-btn
+                    color="red accent-4"
+                    text
+                v-on:click="selectMovie(movie)">
+                    <v-icon>mdi-youtube</v-icon>Trailer
+                </v-btn>  
                 </v-card-actions>
             </v-card>
 
-        </v-col>     
+        </v-col>
+        <v-dialog v-model="dialogTrailer" max-width="800" 
+          v-if="trailer">
+
+              <v-card class="mx-auto my-12">
+                <v-toolbar
+                  dark
+                  color="primary"
+                >
+                  <v-btn
+                    icon
+                    dark
+                    @click="dialogTrailer = false"
+                  >
+                    <v-icon>mdi-close</v-icon>
+                  </v-btn>
+                  
+                </v-toolbar>
+                <div v-html="video">
+                </div>
+              </v-card>
+          </v-dialog>    
     </v-row>
     </v-container>
 </div>
@@ -74,6 +101,9 @@
           moviesId: [],
           movies: [],
           movieToDelete: null,
+          trailer: null,
+          video: null,
+          dialogTrailer: false
       }
     },    
     computed: {
@@ -87,7 +117,7 @@
     mounted() {
        setTimeout(() => {
            this.getMovies();
-       },400)
+       },350)
     },
     methods: {
         deleteMovie(id){
@@ -138,6 +168,17 @@
             showConfirmButton: false,
             timer: 2000
             })
+        },
+        selectMovie(movie){
+            axios.get("https://api.themoviedb.org/3/movie/"+movie.id+"/videos?api_key=94dcae6139c7f599099691ea345952f0&language=en-US")
+            .then( response=> {
+                this.trailer = response.data.results[0].key;
+
+                this.video = '<iframe width="800" height="415" src="https://www.youtube.com/embed/'+this.trailer+'" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+
+                this.dialogTrailer = true;
+                console.log(this.trailer);
+            });
         }
     }
   }

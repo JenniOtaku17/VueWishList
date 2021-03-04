@@ -40,7 +40,7 @@
             <v-card-subtitle><i>Released date: {{ movie.release_date }}</i></v-card-subtitle>
             <v-card-actions>
               <v-btn
-                color="red"
+                color="teal darken-4"
                 text
                 v-on:click="addMovie(movie.id)"
               >
@@ -49,8 +49,14 @@
               <v-btn
                 color="blue"
                 text
-              v-on:click="selectMovie(movie)">
-                <v-icon>mdi-playlist-play</v-icon>See overview
+              v-on:click="selectMovie(movie, 'overview')">
+                <v-icon>mdi-playlist-play</v-icon>Overview
+              </v-btn>  
+              <v-btn
+                color="red accent-4"
+                text
+              v-on:click="selectMovie(movie, 'trailer')">
+                <v-icon>mdi-youtube</v-icon>Trailer
               </v-btn>  
             </v-card-actions>
           </v-card>
@@ -95,6 +101,28 @@
               </v-card>
           </v-dialog>
 
+          <v-dialog v-model="dialogTrailer" max-width="800" 
+          v-if="trailer">
+
+              <v-card class="mx-auto my-12">
+                <v-toolbar
+                  dark
+                  color="primary"
+                >
+                  <v-btn
+                    icon
+                    dark
+                    @click="dialogTrailer = false"
+                  >
+                    <v-icon>mdi-close</v-icon>
+                  </v-btn>
+                  
+                </v-toolbar>
+                <div v-html="video">
+                </div>
+              </v-card>
+          </v-dialog>
+
     </v-row>
   </v-container>
 </div>
@@ -112,12 +140,15 @@
       return {
         movies: null,
         dialog: false,
+        dialogTrailer: false,
         selectedMovie: null,
         wishtlist:null,
         movieToAdd: {
           movieId : null
         },
-        moviesId: null
+        moviesId: null,
+        trailer: null,
+        video : null
       }
     },
     computed: {
@@ -157,10 +188,23 @@
           }
 
       },
-      selectMovie(movie){
-        this.selectedMovie = movie;
-        this.dialog = true;
-        console.log(this.selectedMovie);
+      selectMovie(movie, window){
+        if(window=="overview"){
+          this.selectedMovie = movie;
+          this.dialog = true;
+          console.log(this.selectedMovie);
+        }
+        if(window=="trailer"){
+          axios.get("https://api.themoviedb.org/3/movie/"+movie.id+"/videos?api_key=94dcae6139c7f599099691ea345952f0&language=en-US")
+          .then( response=> {
+            this.trailer = response.data.results[0].key;
+
+            this.video = '<iframe width="800" height="415" src="https://www.youtube.com/embed/'+this.trailer+'" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+
+            this.dialogTrailer = true;
+            console.log(this.trailer);
+          });
+        }
       }
     }
   }
