@@ -136,38 +136,26 @@
       movies: fire.database().ref('movies')
     },
     methods: {
-      addMovie(movie){
+      async addMovie(movie){
         this.movieToAdd.movieId = movie;
 
-        this.$firebase.firestore().collection('users/'+this.user.data.uid+"/movies").get().then(dt => {
-                let moviesId = [];
-                    dt.forEach(mv => {
-                        moviesId.push({
-                            id: mv.id,
-                            movieId : mv.data().movieId
-                        });
-                    })
-                this.moviesId= moviesId;
-                
-                if(moviesId != ""){
-                  this.moviesId.forEach( mvId => {
-                    if(mvId.movieId == movie){
-                      console.log("already exist");
-                    }
-                    else{
-                      console.log(mvId.movieId+"..."+movie)
-                      this.$firebase.firestore().collection("users/"+this.user.data.uid+"/movies").add(this.movieToAdd).then(()=>{
-                        console.log("Added succesfully!");
-                      });
-                    }
-                  });
-                }else{
-                    this.$firebase.firestore().collection("users/"+this.user.data.uid+"/movies").add(this.movieToAdd).then(()=>{
-                      console.log("Added succesfully!");
-                    });
-                }
+        let dt = await this.$firebase.firestore().collection('users/'+this.user.data.uid+"/movies").get();
+          let moviesId = [];
+          console.log(dt);
+          moviesId = dt.docs.map(d => ({id: d.id, movieId : d.data().movieId }));
 
-        });
+          this.moviesId= moviesId;
+          console.log(this.moviesId);
+          let state = this.moviesId.map(data=> data.movieId).includes(movie);
+          
+          if(state){
+            console.log("already added")
+          }else{
+            this.$firebase.firestore().collection("users/"+this.user.data.uid+"/movies").add(this.movieToAdd).then(()=>{
+              console.log("Added succesfully!");
+            });
+          }
+
       },
       selectMovie(movie){
         this.selectedMovie = movie;

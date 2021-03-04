@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import App from './App.vue'
 import vuetify from './plugins/vuetify';
 import VueRouter from 'vue-router';
-import VueAppend from 'vue-append'
+import VueAppend from 'vue-append';
 
 import Authenticate from '../src/components/Authenticate';
 import WishList from '../src/components/WishList';

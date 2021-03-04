@@ -16,8 +16,14 @@
           {{ user.data.displayName}}'s Wish List
         </h1>
         <h4 class="subheading">
-          Scroll down to see your favorite movies
+          Click the button below to choose a random movie
         </h4>
+        <br>
+        <v-btn
+          color="blue darken-4"
+          dark
+          v-on:click="getRandom()"
+        >Get Random Movie</v-btn>
       </v-col>
     </v-row>
   </v-parallax>
@@ -58,6 +64,7 @@
   import {mapState} from 'vuex';
   import axios from 'axios';
   import {fire} from '../firebase';
+  import Swal from 'sweetalert2';
 
   export default {
     name: 'WishList',
@@ -80,7 +87,7 @@
     mounted() {
        setTimeout(() => {
            this.getMovies();
-       },350)
+       },400)
     },
     methods: {
         deleteMovie(id){
@@ -122,6 +129,15 @@
 
                 this.movies = movies;
             });
+        },
+        getRandom(){
+            let movie = this.movies[Math.floor(Math.random() * this.movies.length)];
+            Swal.fire({
+            position: 'center',
+            title: 'The random movie is '+ movie.title,
+            showConfirmButton: false,
+            timer: 2000
+            })
         }
     }
   }

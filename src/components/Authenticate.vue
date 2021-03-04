@@ -99,6 +99,7 @@
 <script>
 
   import firebase from 'firebase';
+  import Swal from 'sweetalert2';
 
   export default {
     name: 'Authenticate',
@@ -147,10 +148,22 @@
 
                 }).catch(error => {
                     this.error = error.message;
-                    alert(this.error);
+                    Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: this.error,
+                    showConfirmButton: false,
+                    timer: 2000
+                    })
                 });
             }else{
-                alert("The passwords dont match");
+                Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title:"The passwords dont match",
+                showConfirmButton: false,
+                timer: 2000
+                })
             }
         },
         login(){
@@ -159,15 +172,21 @@
 
                 this.formLogin.email = "";
                 this.formLogin.password = "";
+
+                this.$router.replace({
+                    name: "Home"
+                })
                 
             }).catch(error => {
                 this.error = error.message;
-                alert(this.error);
+                Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: this.error,
+                showConfirmButton: false,
+                timer: 2000
+                })
             });
-
-            this.$router.replace({
-                name: "Home"
-            })
         }
     }
   }
