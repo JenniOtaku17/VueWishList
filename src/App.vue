@@ -6,7 +6,7 @@
       dark
     >
     <template>
-      <v-tabs>
+      <v-tabs v-if="user">
         <v-tab><router-link to ="/home" style="color:#fff; text-decoration: none;"><v-icon>mdi-home-search</v-icon>HOME</router-link></v-tab>
         <v-container v-if="user.loggedIn">
           <div style="width:310px;float:right;">
@@ -35,9 +35,9 @@
 
 <script>
 
-import routes from './routes/index';
 import {mapGetters} from 'vuex';
-import firebase from 'firebase/app'
+import firebase from 'firebase/app';
+
 
 export default {
   name: 'App',
@@ -50,7 +50,6 @@ export default {
     })
   },
   mounted(){
-    routes
   },
   data: () => ({
     myStyle:{
@@ -64,7 +63,7 @@ export default {
           name: "Authenticate"
         })
       })
-    }
+    },
   }
 };
 </script>

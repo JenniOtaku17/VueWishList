@@ -165,14 +165,12 @@
       })
     },
     mounted() {
-
       axios.get('https://api.themoviedb.org/3/movie/upcoming?api_key=94dcae6139c7f599099691ea345952f0&language=en-US&page=1')
       .then( response=> {
         this.movies = response.data.results;
       });
       this.getGenres();
-
-
+      console.log(this.user);
     },
     firebase: {
       movies: fire.database().ref('movies')

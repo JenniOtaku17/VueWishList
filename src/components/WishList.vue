@@ -19,11 +19,13 @@
           Click the button below to choose a random movie
         </h4>
         <br>
-        <v-btn
-          color="blue darken-4"
-          dark
-          v-on:click="getRandom()"
-        >Get Random Movie</v-btn>
+        <div v-if="movies.length">
+            <v-btn
+            color="blue darken-4"
+            dark
+            v-on:click="getRandom()"
+            >Get Random Movie</v-btn>
+        </div>
       </v-col>
     </v-row>
   </v-parallax>

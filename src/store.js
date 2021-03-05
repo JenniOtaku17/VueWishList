@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex);
 
+
 export default new Vuex.Store({
     state: {
         user: {
@@ -35,6 +36,9 @@ export default new Vuex.Store({
             } else{
                 commit("SET_USER", null);
             }
+        },
+        initApp(){
+            return this.state.user.loggedIn
         }
     }
 })
