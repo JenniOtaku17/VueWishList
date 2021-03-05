@@ -11,24 +11,12 @@ Vue.use(VueRouter);
 
 async function redirectIfNotAuth (to, from, next) {
     const user = await getUserState();
-    console.log(user.loggedIn);
     if (user.loggedIn) {
         next()
-    } else {
+    }else{
         next({ name: 'Authenticate' })
     }
 }
-
-async function redirectIfAuth (to, from, next) {
-    const user = await getUserState();
-    console.log(user.loggedIn);
-    if (user.loggedIn) {
-        next({ name: 'Home' })
-    } else {
-        next()
-    }
-}
-
 
 function getUserState () {
     return store.state.user;
@@ -41,8 +29,8 @@ const router = new VueRouter({
         {
             path: '/authenticate',
             name: 'Authenticate',
-            component: Authenticate,
-            beforeEnter: redirectIfAuth
+            component: Authenticate
+            
         },
         {
             path: '/wishlist',

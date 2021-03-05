@@ -100,6 +100,7 @@
 
   import firebase from 'firebase';
   import Swal from 'sweetalert2';
+  import store from '../store'
 
   export default {
     name: 'Authenticate',
@@ -121,6 +122,12 @@
           show: false,
           show2: false
       }
+    },
+    mounted() {
+        setTimeout(() => {
+         this.validateLoggedIn();
+       },300)
+       
     },
     methods: {
         changeForm(state){
@@ -185,6 +192,20 @@
                 timer: 2000
                 })
             });
+        },
+        getUserState () {
+            return store.state.user;
+        },
+        async validateLoggedIn(){
+            let user = await this.getUserState();
+            console.log(user.loggedIn);
+            if(user.loggedIn){
+
+                    this.$router.replace({
+                        name: "Home"
+                    })
+
+            }
         }
     }
   }

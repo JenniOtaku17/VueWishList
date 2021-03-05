@@ -7,7 +7,7 @@
     >
     <template>
       <v-tabs v-if="user">
-        <v-tab><router-link to ="/home" style="color:#fff; text-decoration: none;"><v-icon>mdi-home-search</v-icon>HOME</router-link></v-tab>
+        <v-tab><router-link to ="/home" style="color:#fff; text-decoration: none;"><v-icon style="font-size:45px;">mdi-movie-open-star-outline</v-icon></router-link></v-tab>
         <v-container v-if="user.loggedIn">
           <div style="width:310px;float:right;">
           <v-tab style="float:left"><router-link to ="/wishlist" style="color:#fff; text-decoration: none;">    <v-avatar>

@@ -1,7 +1,7 @@
 <template>
 <div>
   <v-parallax
-    height="400"
+    height="300"
     src="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg"
   >
     <v-row
