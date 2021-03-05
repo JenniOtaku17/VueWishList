@@ -133,16 +133,14 @@
                     data.user.updateProfile({
                         displayName : this.formSignup.name
                     });
-
-                    firebase.auth().signInWithEmailAndPassword(this.formSignup.email, this.formSignup.password).then( data => {
-                        console.log(data);
-                        
-                        this.formSignup.name = "";
-                        this.formSignup.email = "";
-                        this.formSignup.password = "";
-
-                        this.$router.replace({
-                            name: "Home"
+                    
+                    data.user.sendEmailVerification().then(()=>{
+                        Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title:"A verification email has been sent to your email, please verify and proceed with the login process.",
+                        }).then(()=> {
+                            this.$router.go()
                         })
                     })
 

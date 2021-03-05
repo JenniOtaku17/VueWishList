@@ -28,7 +28,7 @@
         v-for="movie in movies"
         :key="movie.id"
         >
-          <v-card width="350" style="margin-bottom:5%;">
+          <v-card width="350" height="400" style="margin-bottom:5%;">
             <v-img
               :src="'http://image.tmdb.org/t/p/w780'+movie.poster_path"
               class="white--text align-end"
@@ -37,11 +37,14 @@
             >
               <v-card-title v-text="movie.title"></v-card-title>
             </v-img>
-            <div v-for="genreMV in movie.genre_ids" :key="genreMV" style="display:inline">
-                <v-chip style="margin:5px;">{{ genreMV.name }}</v-chip>
-            </div>
+            <span v-for="genreMV in movie.genre_ids" :key="genreMV" >
+              <span v-if="genreMV" style="display:inline">
+                <v-chip color="primary" style="margin:5px;">{{ genres.find(x => x.id === genreMV).name }}</v-chip>
+              </span>
+            </span>
             <v-card-subtitle><i>Released date: {{ movie.release_date }}</i></v-card-subtitle>
-            <v-card-actions>
+            <v-card-actions
+            class="pa-150" style="position: absolute!important; bottom: 10px!important;">
               <v-btn
                 color="teal darken-4"
                 text
@@ -104,7 +107,7 @@
               </v-card>
           </v-dialog>
 
-          <v-dialog v-model="dialogTrailer" max-width="800" 
+          <v-dialog v-model="dialogTrailer" max-width="1000" 
           v-if="trailer">
 
               <v-card class="mx-auto my-12">
@@ -166,37 +169,9 @@
       axios.get('https://api.themoviedb.org/3/movie/upcoming?api_key=94dcae6139c7f599099691ea345952f0&language=en-US&page=1')
       .then( response=> {
         this.movies = response.data.results;
-        console.log(this.movies);
-      })
+      });
+      this.getGenres();
 
-      axios.get('https://api.themoviedb.org/3/genre/movie/list?api_key=94dcae6139c7f599099691ea345952f0&language=en-US')
-      .then( response=> {
-        this.genres = response.data.genres;
-        console.log(this.genres);
-
-        this.movies.forEach(movie => {
-          movie.genre_ids.forEach(gr => {
-
-            let newGenres = []
-            this.genres.forEach(genre => {
-
-                if(genre.id==gr){
-                  newGenres.push({
-                    id: gr,
-                    name: genre.name
-                  })
-                  console.log(genre.id);
-                }
-            });
-            this.newGenres = newGenres;
-
-          });
-          
-          movie.genre_ids.splice(this.newGenres);
-
-        });
-        console.log(this.movies)
-      })
 
     },
     firebase: {
@@ -235,12 +210,30 @@
           .then( response=> {
             this.trailer = response.data.results[0].key;
 
-            this.video = '<iframe width="800" height="415" src="https://www.youtube.com/embed/'+this.trailer+'" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+            this.video = '<iframe width="1000" height="550" src="https://www.youtube.com/embed/'+this.trailer+'" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
 
             this.dialogTrailer = true;
             console.log(this.trailer);
           });
         }
+      },
+
+      async getGenres(){
+
+        let list = await axios.get('https://api.themoviedb.org/3/movie/upcoming?api_key=94dcae6139c7f599099691ea345952f0&language=en-US&page=1')
+        let movieList= list.data.results;
+        let genresList = await axios.get('https://api.themoviedb.org/3/genre/movie/list?api_key=94dcae6139c7f599099691ea345952f0&language=en-US')
+        let nameGenres = [];
+
+        movieList.forEach(movie=> {
+          movie.genre_ids.forEach(genre => {
+            let objectGenre = genresList.data.genres.find(x => x.id === genre);
+            nameGenres.push(objectGenre);
+          })
+
+        })
+        this.genres = nameGenres;
+
       }
     }
   }
