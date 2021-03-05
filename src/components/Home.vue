@@ -41,19 +41,22 @@
               <span v-if="genreMV" style="display:inline">
                 <v-chip color="primary" style="margin:5px;">{{ genres.find(x => x.id === genreMV).name }}</v-chip>
               </span>
+              <span v-if="movie.adult==true">
+                <v-chip color="red accent-4" style="margin:5px;">+18</v-chip>
+              </span>
             </span>
-            <v-card-subtitle><i>Released date: {{ movie.release_date }}</i></v-card-subtitle>
+            <v-card-subtitle>Released date: <i>{{ movie.release_date }}</i></v-card-subtitle>
             <v-card-actions
             class="pa-150" style="position: absolute!important; bottom: 10px!important;">
               <v-btn
-                color="teal darken-4"
+                color="red accent-4"
                 text
                 v-on:click="addMovie(movie.id)"
               >
               <v-icon>mdi-playlist-plus</v-icon>ADD
               </v-btn>
               <v-btn
-                color="blue"
+                color="primary"
                 text
               v-on:click="selectMovie(movie, 'overview')">
                 <v-icon>mdi-playlist-play</v-icon>Overview
@@ -97,7 +100,7 @@
                 <v-divider></v-divider>
                 <v-card-actions>
                   <v-btn
-                    color="red"
+                    color="red accent-4"
                     text
                     v-on:click="addMovie(selectedMovie.id)"
                   >
@@ -168,6 +171,7 @@
       axios.get('https://api.themoviedb.org/3/movie/upcoming?api_key=94dcae6139c7f599099691ea345952f0&language=en-US&page=1')
       .then( response=> {
         this.movies = response.data.results;
+        console.log(this.movies)
       });
       this.getGenres();
       console.log(this.user);

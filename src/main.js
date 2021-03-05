@@ -21,10 +21,10 @@ Vue.use(VueFire);
 Vue.use(VueAppend);
 
 new Vue({
+  router,
   Vuex,
   vuetify,
   store,
-  router,
   render: h => h(App)
 }).$mount('#app')
 
