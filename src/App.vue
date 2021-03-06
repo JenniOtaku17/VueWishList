@@ -10,7 +10,8 @@
         <v-tab><router-link to ="/home" style="color:#fff; text-decoration: none;"><v-icon style="font-size:45px;">mdi-movie-open-star-outline</v-icon></router-link></v-tab>
         <v-container v-if="user.loggedIn">
           <div style="width:380px;float:right;">
-          <v-tab style="float:left"><router-link to ="/wishlist" style="color:#fff; text-decoration: none;">    <v-avatar>
+          <v-tab style="float:left"><router-link to ="/wishlist" style="color:#fff; text-decoration: none;">    
+          <v-avatar color="blue darken-4" size="40">
             <v-icon>mdi-account</v-icon>
           </v-avatar> {{ user.data.displayName}}'s  wish list</router-link>
           </v-tab>

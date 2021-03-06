@@ -16,30 +16,67 @@
           List of Upcoming Movies
         </h1>
         <h4 class="subheading">
-          See the overview and add your favorites to your wish list
+          Click the button below to choose a random movie
         </h4>
+        <br>
+        <div v-if="movies">
+            <v-btn
+            color="blue darken-4"
+            dark
+            v-on:click="getRandom()"
+            >Get Random Movie</v-btn>
+        </div>
       </v-col>
     </v-row>
   </v-parallax>
+    <v-card style="border-radius:0;">
+    <v-tabs
+      background-color="light-blue darken-4"
+      center-active
+      centered
+      dark
+    >
+      <v-tab v-on:click="changeMovies('upcoming')">Upcoming</v-tab>
+      <v-tab v-on:click="changeMovies('popular')">Popular</v-tab>
+      <v-tab v-on:click="changeMovies('top_rated')">Top Rated</v-tab>
+      <v-tab v-on:click="changeMovies('now_playing')">Now Playing</v-tab>
+    </v-tabs>
+  </v-card>
   <v-container fluid class="ma-3">
-    <v-row no-gutters v-if="movies">
+    <v-row v-if="movies">
       
         <v-col
         v-for="movie in movies"
         :key="movie.id"
         >
           <v-card width="350" height="400" style="margin-bottom:5%;">
-            <v-img
-              :src="'http://image.tmdb.org/t/p/w780'+movie.poster_path"
-              class="white--text align-end"
-              gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-              height="200px"
-            >
-              <v-card-title v-text="movie.title"></v-card-title>
-            </v-img>
+            <span v-if="movie.poster_path">
+              <v-img
+                  :src="'http://image.tmdb.org/t/p/w780'+movie.poster_path"
+                  class="white--text align-end"
+                  gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+                  height="200px"
+                >
+                  <v-card-title v-text="movie.title"></v-card-title>
+              </v-img>
+            </span>
+            <span v-else>
+              <v-img
+                  :src="'https://www.positivehomeopathy.com/wp-content/uploads/2019/09/No-Image-Found-400x264-1.png'"
+                  class="white--text align-end"
+                  gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+                  height="200px"
+                >
+                  <v-card-title v-text="movie.title"></v-card-title>
+              </v-img>
+            </span>
             <span v-for="genreMV in movie.genre_ids" :key="genreMV" >
               <span v-if="genreMV" style="display:inline">
-                <v-chip color="primary" style="margin:5px;">{{ genres.find(x => x.id === genreMV).name }}</v-chip>
+                <span v-if="genres">
+                  <span v-if="genres.find(x => x.id === genreMV)"> 
+                    <v-chip color="primary" style="margin:5px;">{{ genres.find(x => x.id === genreMV).name }}</v-chip>
+                  </span>
+                </span>
               </span>
               <span v-if="movie.adult==true">
                 <v-chip color="red accent-4" style="margin:5px;">+18</v-chip>
@@ -133,6 +170,16 @@
           </v-dialog>
 
     </v-row>
+    <br>
+    <div class="text-center">
+      <v-btn
+        rounded dark
+        color="primary"
+        v-on:click="loadMore">
+        Load More
+      </v-btn> 
+    </div> 
+    <br>
   </v-container>
 </div>
 </template>
@@ -141,6 +188,7 @@
   import axios from 'axios';
   import {mapGetters} from 'vuex';
   import {fire} from '../firebase';
+  import Swal from 'sweetalert2';
 
   export default {
     name: 'Home',
@@ -159,7 +207,9 @@
         trailer: null,
         video : null,
         genres: null,
-        newGenres: null
+        newGenres: null,
+        page: 1,
+        state: 'upcoming'
       }
     },
     computed: {
@@ -168,7 +218,7 @@
       })
     },
     mounted() {
-      axios.get('https://api.themoviedb.org/3/movie/upcoming?api_key=94dcae6139c7f599099691ea345952f0&language=en-US&page=1')
+      axios.get('https://api.themoviedb.org/3/movie/upcoming?api_key=94dcae6139c7f599099691ea345952f0&language=en-US&page='+this.page)
       .then( response=> {
         this.movies = response.data.results;
         console.log(this.movies)
@@ -219,7 +269,6 @@
           });
         }
       },
-
       async getGenres(){
 
         let list = await axios.get('https://api.themoviedb.org/3/movie/upcoming?api_key=94dcae6139c7f599099691ea345952f0&language=en-US&page=1')
@@ -236,7 +285,69 @@
         })
         this.genres = nameGenres;
 
+      },
+      async loadMore(){
+
+        try{
+          this.page = this.page+1;
+
+          let result = await axios.get('https://api.themoviedb.org/3/movie/'+this.state+'?api_key=94dcae6139c7f599099691ea345952f0&language=en-US&page='+this.page);
+          let movies = result.data.results;
+            movies.forEach(movie => {
+              this.movies.push(movie);
+            });
+
+          let genresList = await axios.get('https://api.themoviedb.org/3/genre/movie/list?api_key=94dcae6139c7f599099691ea345952f0&language=en-US')
+
+          movies.forEach(movie=> {
+            movie.genre_ids.forEach(genre => {
+              let objectGenre = genresList.data.genres.find(x => x.id === genre);
+              this.genres.push(objectGenre);
+            })
+          })
+
+        }catch(error){
+          console.log(error);
+          Swal.fire({
+            position: 'center',
+            title: 'Ups! There are not more movies to show',
+            showConfirmButton: false,
+            timer: 2000
+          })
+        }
+
+      },
+      getRandom(){
+        let movie = this.movies[Math.floor(Math.random() * this.movies.length)];
+        Swal.fire({
+        position: 'center',
+        title: 'The random movie is '+ movie.title,
+        showConfirmButton: false,
+        timer: 2000
+        })
+      },
+      async changeMovies(state){
+
+        this.page = 1;
+        this.state = state;
+
+        let result = await axios.get('https://api.themoviedb.org/3/movie/'+state+'?api_key=94dcae6139c7f599099691ea345952f0&language=en-US&page='+this.page);
+        this.movies = result.data.results;
+
+        let genresList = await axios.get('https://api.themoviedb.org/3/genre/movie/list?api_key=94dcae6139c7f599099691ea345952f0&language=en-US')
+        let nameGenres = [];
+
+        this.movies.forEach(movie=> {
+          movie.genre_ids.forEach(genre => {
+            let objectGenre = genresList.data.genres.find(x => x.id === genre);
+            nameGenres.push(objectGenre);
+          })
+
+        })
+        this.genres = nameGenres;
+        
       }
+
     }
   }
 </script>
