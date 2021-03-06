@@ -27,6 +27,12 @@ const router = new VueRouter({
     mode: 'history',
     routes: [
         {
+            path: '/',
+            name: 'Home',
+            component: Home
+            
+        },
+        {
             path: '/authenticate',
             name: 'Authenticate',
             component: Authenticate

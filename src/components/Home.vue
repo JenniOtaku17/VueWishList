@@ -320,10 +320,11 @@
       getRandom(){
         let movie = this.movies[Math.floor(Math.random() * this.movies.length)];
         Swal.fire({
-        position: 'center',
-        title: 'The random movie is '+ movie.title,
-        showConfirmButton: false,
-        timer: 2000
+          title: movie.title,
+          imageUrl: 'http://image.tmdb.org/t/p/w780'+movie.poster_path,
+          imageAlt: 'A tall image',
+          showConfirmButton: false,
+          timer: 3000
         })
       },
       async changeMovies(state){
