@@ -41,6 +41,13 @@
       <v-tab v-on:click="changeMovies('top_rated')">Top Rated</v-tab>
       <v-tab v-on:click="changeMovies('now_playing')">Now Playing</v-tab>
     </v-tabs>
+        <v-select style="width:10%; height:48px;"
+          v-model="selectedLanguage"
+          :items="item"
+          label="Movie Language"
+          solo
+          v-on:change="changeLanguage()"
+        ></v-select>
   </v-card>
   <v-container fluid class="ma-3">
     <v-row v-if="movies">
@@ -209,7 +216,11 @@
         genres: null,
         newGenres: null,
         page: 1,
-        state: 'upcoming'
+        state: 'upcoming',
+        item: ['english','spanish'],
+        country: 'US',
+        language: 'en',
+        selectedLanguage: null
       }
     },
     computed: {
@@ -218,18 +229,21 @@
       })
     },
     mounted() {
-      axios.get('https://api.themoviedb.org/3/movie/upcoming?api_key=94dcae6139c7f599099691ea345952f0&language=en-US&page='+this.page)
-      .then( response=> {
-        this.movies = response.data.results;
-        console.log(this.movies)
-      });
-      this.getGenres();
+      this.loadMovies();
       console.log(this.user);
     },
     firebase: {
       movies: fire.database().ref('movies')
     },
     methods: {
+      loadMovies(){
+        axios.get('https://api.themoviedb.org/3/movie/'+this.state+'?api_key=94dcae6139c7f599099691ea345952f0&language='+this.language+'-'+this.country+'&page='+this.page)
+        .then( response=> {
+          this.movies = response.data.results;
+          console.log(this.movies)
+        });
+        this.getGenres();
+      },
       async addMovie(movie){
         this.movieToAdd.movieId = movie;
 
@@ -291,13 +305,13 @@
         try{
           this.page = this.page+1;
 
-          let result = await axios.get('https://api.themoviedb.org/3/movie/'+this.state+'?api_key=94dcae6139c7f599099691ea345952f0&language=en-US&page='+this.page);
+          let result = await axios.get('https://api.themoviedb.org/3/movie/'+this.state+'?api_key=94dcae6139c7f599099691ea345952f0&language='+this.language+'-'+this.country+'&page='+this.page);
           let movies = result.data.results;
             movies.forEach(movie => {
               this.movies.push(movie);
             });
 
-          let genresList = await axios.get('https://api.themoviedb.org/3/genre/movie/list?api_key=94dcae6139c7f599099691ea345952f0&language=en-US')
+          let genresList = await axios.get('https://api.themoviedb.org/3/genre/movie/list?api_key=94dcae6139c7f599099691ea345952f0&language='+this.language+'-'+this.country)
 
           movies.forEach(movie=> {
             movie.genre_ids.forEach(genre => {
@@ -332,10 +346,10 @@
         this.page = 1;
         this.state = state;
 
-        let result = await axios.get('https://api.themoviedb.org/3/movie/'+state+'?api_key=94dcae6139c7f599099691ea345952f0&language=en-US&page='+this.page);
+        let result = await axios.get('https://api.themoviedb.org/3/movie/'+state+'?api_key=94dcae6139c7f599099691ea345952f0&language='+this.language+'-'+this.country+'&page='+this.page);
         this.movies = result.data.results;
 
-        let genresList = await axios.get('https://api.themoviedb.org/3/genre/movie/list?api_key=94dcae6139c7f599099691ea345952f0&language=en-US')
+        let genresList = await axios.get('https://api.themoviedb.org/3/genre/movie/list?api_key=94dcae6139c7f599099691ea345952f0&language='+this.language+'-'+this.country)
         let nameGenres = [];
 
         this.movies.forEach(movie=> {
@@ -347,6 +361,22 @@
         })
         this.genres = nameGenres;
         
+      },
+      changeLanguage(){
+
+        console.log(this.selectedLanguage);
+        if(this.selectedLanguage== 'english'){
+          this.language= 'en',
+          this.country= 'US'
+
+          this.loadMovies();
+        }
+        if(this.selectedLanguage== 'spanish'){
+          this.language= 'es',
+          this.country= 'ESP'
+
+          this.loadMovies();
+        }
       }
 
     }
