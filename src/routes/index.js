@@ -4,6 +4,7 @@ import VueRouter from 'vue-router';
 import Authenticate from '../components/Authenticate';
 import WishList from '../components/WishList';
 import Home from '../components/Home';
+import Welcome from '../components/Welcome'
 
 import store from '../store';
 
@@ -14,7 +15,7 @@ async function redirectIfNotAuth (to, from, next) {
     if (user.loggedIn) {
         next()
     }else{
-        next({ name: 'Authenticate' })
+        next({ name: 'Welcome' })
     }
 }
 
@@ -28,8 +29,13 @@ const router = new VueRouter({
     routes: [
         {
             path: '/',
-            name: 'Home',
-            component: Home
+            component: Welcome
+            
+        },
+        {
+            path: '/welcome',
+            name: 'Welcome',
+            component: Welcome
             
         },
         {

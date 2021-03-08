@@ -1,5 +1,6 @@
 <template>
 <div>
+  <!--Parallax inicial-->
   <v-parallax
     height="300"
     src="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg"
@@ -29,6 +30,9 @@
       </v-col>
     </v-row>
   </v-parallax>
+  <!--Parallax inicial-->
+
+  <!--Opciones de peliculas -->
     <v-card style="border-radius:0;">
     <v-tabs
       background-color="light-blue darken-4"
@@ -41,7 +45,7 @@
       <v-tab v-on:click="changeMovies('top_rated')">Top Rated</v-tab>
       <v-tab v-on:click="changeMovies('now_playing')">Now Playing</v-tab>
     </v-tabs>
-        <v-select style="width:10%; height:48px;"
+        <v-select style="width:10%; height:48px;color:black!important; background-color:black!important;"
           v-model="selectedLanguage"
           :items="item"
           label="Movie Language"
@@ -49,6 +53,8 @@
           v-on:change="changeLanguage()"
         ></v-select>
   </v-card>
+    <!--Opciones de peliculas -->
+
   <v-container fluid class="ma-3">
     <v-row v-if="movies">
       
@@ -56,7 +62,14 @@
         v-for="movie in movies"
         :key="movie.id"
         >
-          <v-card width="350" height="400" style="margin-bottom:5%;">
+        <v-hover
+        v-slot="{ hover }"
+        open-delay="200"
+        >
+          <!--Peliculas -->
+          <v-card width="350" height="400" style="margin-bottom:5%;"
+          :elevation="hover ? 16 : 2"
+          :class="{ 'on-hover': hover }">
             <span v-if="movie.poster_path">
               <v-img
                   :src="'http://image.tmdb.org/t/p/w780'+movie.poster_path"
@@ -77,11 +90,12 @@
                   <v-card-title v-text="movie.title"></v-card-title>
               </v-img>
             </span>
+
             <span v-for="genreMV in movie.genre_ids" :key="genreMV" >
               <span v-if="genreMV" style="display:inline">
                 <span v-if="genres">
                   <span v-if="genres.find(x => x.id === genreMV)"> 
-                    <v-chip color="primary" style="margin:5px;">{{ genres.find(x => x.id === genreMV).name }}</v-chip>
+                    <v-chip color="primary"  style="margin:5px;">{{ genres.find(x => x.id === genreMV).name }}</v-chip>
                   </span>
                 </span>
               </span>
@@ -104,7 +118,7 @@
                 text
               v-on:click="selectMovie(movie, 'overview')">
                 <v-icon>mdi-playlist-play</v-icon>Overview
-              </v-btn>  
+              </v-btn>
               <v-btn
                 color="red accent-4"
                 text
@@ -112,9 +126,16 @@
                 <v-icon>mdi-youtube</v-icon>Trailer
               </v-btn>  
             </v-card-actions>
+            <div style="position: absolute; bottom: 330px;">
+            <div><v-icon style="color:#F99D19;font-size:70px;">mdi-star</v-icon></div>
+            <div style="font-size: 12px;position: absolute; bottom: 23px; left: 27px;"><span>{{ movie.vote_average }}</span></div>
+            </div>
           </v-card>
+            <!--Peliculas -->
 
+        </v-hover>
         </v-col>
+
         <v-dialog v-model="dialog" max-width="600" v-if="selectedMovie">
 
               <v-card class="mx-auto my-12">
@@ -175,6 +196,98 @@
                 </div>
               </v-card>
           </v-dialog>
+          
+          <v-dialog v-model="dialogSimilar" max-width="1200" 
+          v-if="similarMovies" style="height: 600px!important;">
+              <v-card class="mx-auto my-12">
+                <v-toolbar
+                  dark
+                  color="black"
+                >
+                  <v-btn
+                    icon
+                    dark
+                    @click="dialogSimilar = false"
+                  >
+                    <v-icon>mdi-close</v-icon>
+                  </v-btn>
+                  <v-card-title>Similar Movies</v-card-title>
+                </v-toolbar>
+                
+                  <v-slide-group
+                    class="pa-4"
+                     active-class="success"
+                    show-arrows
+                  >
+
+                  <v-slide-item v-for="movie in similarMovies" :key="movie.id">
+                    <v-card width="350" height="400" style="margin-bottom:5%;">
+                      <span v-if="movie.poster_path">
+                        <v-img
+                            :src="'http://image.tmdb.org/t/p/w780'+movie.poster_path"
+                            class="white--text align-end"
+                            gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+                            height="200px"
+                          >
+                            <v-card-title v-text="movie.title"></v-card-title>
+                        </v-img>
+                      </span>
+                      <span v-else>
+                        <v-img
+                            :src="'https://www.positivehomeopathy.com/wp-content/uploads/2019/09/No-Image-Found-400x264-1.png'"
+                            class="white--text align-end"
+                            gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+                            height="200px"
+                          >
+                            <v-card-title v-text="movie.title"></v-card-title>
+                        </v-img>
+                      </span>
+
+                      <span v-for="genreMV in movie.genre_ids" :key="genreMV" >
+                        <span v-if="genreMV" style="display:inline">
+                          <span v-if="genres">
+                            <span v-if="genres.find(x => x.id === genreMV)"> 
+                              <v-chip color="primary"  style="margin:5px;">{{ genres.find(x => x.id === genreMV).name }}</v-chip>
+                            </span>
+                          </span>
+                        </span>
+                        <span v-if="movie.adult==true">
+                          <v-chip color="red accent-4" style="margin:5px;">+18</v-chip>
+                        </span>
+                      </span>
+                      <v-card-subtitle>Released date: <i>{{ movie.release_date }}</i></v-card-subtitle>
+                      <v-card-actions
+                      class="pa-150" style="position: absolute!important; bottom: 10px!important;">
+                        <v-btn
+                          color="red accent-4"
+                          text
+                          v-on:click="addMovie(movie.id)"
+                        >
+                        <v-icon>mdi-playlist-plus</v-icon>ADD
+                        </v-btn>
+                        <v-btn
+                          color="primary"
+                          text
+                        v-on:click="selectMovie(movie, 'overview')">
+                          <v-icon>mdi-playlist-play</v-icon>Overview
+                        </v-btn>  
+                        <v-btn
+                          color="red accent-4"
+                          text
+                        v-on:click="selectMovie(movie, 'trailer')">
+                          <v-icon>mdi-youtube</v-icon>Trailer
+                        </v-btn>  
+                      </v-card-actions>
+                      <div style="position: absolute; bottom: 330px;">
+                      <div><v-icon style="color:#F99D19;font-size:70px;">mdi-star</v-icon></div>
+                      <div style="font-size: 12px;position: absolute; bottom: 23px; left: 27px;"><span>{{ movie.vote_average }}</span></div>
+                      </div>
+                    </v-card> 
+                  </v-slide-item>
+
+                  </v-slide-group>
+              </v-card>
+          </v-dialog>
 
     </v-row>
     <br>
@@ -205,6 +318,7 @@
         movies: null,
         dialog: false,
         dialogTrailer: false,
+        dialogSimilar: false,
         selectedMovie: null,
         wishtlist:null,
         movieToAdd: {
@@ -217,10 +331,11 @@
         newGenres: null,
         page: 1,
         state: 'upcoming',
-        item: ['english','spanish'],
+        item: ['English','Spanish'],
         country: 'US',
         language: 'en',
-        selectedLanguage: null
+        selectedLanguage: null,
+        similarMovies: null
       }
     },
     computed: {
@@ -258,9 +373,11 @@
           
           if(state){
             console.log("already added")
+            this.getSimilarMovies(movie);
           }else{
             this.$firebase.firestore().collection("users/"+this.user.data.uid+"/movies").add(this.movieToAdd).then(()=>{
               console.log("Added succesfully!");
+              this.getSimilarMovies(movie);
             });
           }
 
@@ -365,18 +482,26 @@
       changeLanguage(){
 
         console.log(this.selectedLanguage);
-        if(this.selectedLanguage== 'english'){
+        if(this.selectedLanguage== 'English'){
           this.language= 'en',
           this.country= 'US'
 
           this.loadMovies();
         }
-        if(this.selectedLanguage== 'spanish'){
+        if(this.selectedLanguage== 'Spanish'){
           this.language= 'es',
           this.country= 'ESP'
 
           this.loadMovies();
         }
+      },
+      async getSimilarMovies(movie){
+        let result = await axios.get('https://api.themoviedb.org/3/movie/'+movie+'/similar?api_key=94dcae6139c7f599099691ea345952f0&language='+this.language+'-'+this.country+'&page=1');
+        this.similarMovies = result.data.results;
+
+        this.dialogSimilar = true;
+        console.log("Similar movies")
+        console.log(this.similarMovies)
       }
 
     }

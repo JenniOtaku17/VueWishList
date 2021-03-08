@@ -1,5 +1,7 @@
 <template>
 <div v-if="user.data">
+
+  <!--Parallax -->
   <v-parallax
     height="300"
     src="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg"
@@ -29,13 +31,21 @@
       </v-col>
     </v-row>
   </v-parallax>
+    <!--Parallax -->
+
   <v-container fluid class="ma-3">
     <v-row no-gutters v-if="movies.length">
         <v-col
         v-for="movie in movies"
         :key="movie.id"
         >
-            <v-card width="350" style="margin-bottom:5%;">
+        <v-hover
+        v-slot="{ hover }"
+        open-delay="200"
+        >
+          <!--Peliculas -->
+            <v-card width="350" style="margin-bottom:5%;"
+            :elevation="hover ? 16 : 2">
                 <v-img
                 :src="'http://image.tmdb.org/t/p/w780'+movie.poster_path"
                 class="white--text align-end"
@@ -58,11 +68,14 @@
                     text
                 v-on:click="selectMovie(movie)">
                     <v-icon>mdi-youtube</v-icon>Trailer
-                </v-btn>  
+                </v-btn>
+                
                 </v-card-actions>
             </v-card>
-
+          <!--Peliculas -->
+        </v-hover>
         </v-col>
+
         <v-dialog v-model="dialogTrailer" max-width="800" 
           v-if="trailer">
 
@@ -83,7 +96,8 @@
                 <div v-html="video">
                 </div>
               </v-card>
-          </v-dialog>    
+          </v-dialog>   
+         
     </v-row>
     </v-container>
 </div>
@@ -131,7 +145,7 @@
                     if(this.movieToDelete){
                         this.$firebase.firestore().collection('users/'+this.user.data.uid+"/movies").doc(this.movieToDelete).delete().then(()=> {
                             console.log("Deleted");
-                            this.$router.go()
+                            this.getMovies();
                         });
                     }
                 }

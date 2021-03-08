@@ -3,6 +3,7 @@
     <v-row>
         <v-col class="text-align:center;">
             <v-card width="40%" class="mx-auto my-15" style="padding:2%">
+                <!--Form switch -->
                   <v-row
                         align="center"
                         justify="space-around"
@@ -24,9 +25,16 @@
                         Sign UP
                         </v-btn>
                   </v-row>
+                  <!--Form switch -->
+                  
                   <br>
                   <v-divider></v-divider>
                   <br>
+                  <div v-if="error" style="color:red; font-size:12px; margin-bottom:20px;">
+                      <span >*{{ error }}</span>
+                  </div>
+
+                  <!--SignUP Form -->
                   <div v-if="signup" style="text-align: center;">
                     <v-text-field
                         v-model="formSignup.name"
@@ -65,6 +73,9 @@
                     SAVE
                     </v-btn>
                   </div>
+                  <!--SignUP Form -->
+
+                  <!--Login Form -->
                   <div v-else style="text-align: center;">
                     <v-text-field
                         v-model="formLogin.email"
@@ -89,6 +100,7 @@
                     SAVE
                     </v-btn>
                   </div>
+                  <!--Login Form -->
 
             </v-card>
         </v-col>
@@ -120,7 +132,8 @@
           },
           currentUser: null,
           show: false,
-          show2: false
+          show2: false,
+          error: null
       }
     },
     mounted() {
@@ -153,48 +166,35 @@
 
                 }).catch(error => {
                     this.error = error.message;
-                    Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: this.error,
-                    showConfirmButton: false,
-                    timer: 2000
-                    })
                 });
             }else{
-                Swal.fire({
-                position: 'center',
-                icon: 'error',
-                title:"The passwords dont match",
-                showConfirmButton: false,
-                timer: 2000
-                })
+                this.error = "Passwords do not match"
             }
         },
         login(){
             firebase.auth().signInWithEmailAndPassword(this.formLogin.email, this.formLogin.password).then( data => {
                 console.log(data);
 
-                this.formLogin.email = "";
-                this.formLogin.password = "";
+                if(data.user.emailVerified == true){
+                    this.formLogin.email = "";
+                    this.formLogin.password = "";
 
-                this.$router.replace({
-                    name: "Home"
-                })
+                    this.$router.replace({
+                        name: "Home"
+                    })
+                }else{
+                    firebase.auth().signOut().then(()=> {
+                        this.error = 'Must verify your email address.';
+                    })
+                }
+
                 
             }).catch(error => {
                 this.error = error.message;
-                Swal.fire({
-                position: 'center',
-                icon: 'error',
-                title: this.error,
-                showConfirmButton: false,
-                timer: 2000
-                })
             });
         },
         getUserState () {
-            return store.state.user;
+            return store.state.use;
         },
         async validateLoggedIn(){
             let user = await this.getUserState();

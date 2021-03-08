@@ -7,17 +7,41 @@
     >
     <template>
       <v-tabs v-if="user" >
-        <v-tab><router-link to ="/home" style="color:#fff; text-decoration: none;"><v-icon style="font-size:45px;">mdi-movie-open-star-outline</v-icon></router-link></v-tab>
+        <v-tab><router-link to ="/welcome" style="color:#fff; text-decoration: none;"><v-icon style="font-size:45px;">mdi-movie-open-star-outline</v-icon></router-link></v-tab>
         <v-container v-if="user.loggedIn">
-          <div style="width:380px;float:right;">
-          <v-tab style="float:left"><router-link to ="/wishlist" style="color:#fff; text-decoration: none;">    
-          <v-avatar color="blue darken-4" size="40">
-            <v-icon>mdi-account</v-icon>
-          </v-avatar> {{ user.data.displayName}}'s  wish list</router-link>
+          <div style="float:right;">
+          <v-tab style="float:left;">
+             <router-link to ="/home" style="color:#fff; text-decoration: none;margin-top:10px;">
+              <v-icon>mdi-movie-search</v-icon> MOVIES</router-link>
           </v-tab>
-          <v-tab style="float:right;">
-             <a v-on:click="logOut" style="color:#fff; list-style:none; margin-top:10px;">
-              <v-icon>mdi-logout</v-icon>Log Out</a>
+          <v-tab style="float:right">
+          <v-menu 
+          open-on-hover offset-y>
+            <template v-slot:activator="{ on, attrs }" >
+              <btn
+              v-bind="attrs"
+              v-on="on"
+              text
+              >    
+              <v-avatar color="blue darken-4" size="40">
+                <v-icon>mdi-account</v-icon>
+              </v-avatar><span style="color:#fff!important;"> {{ user.data.displayName}}</span>
+              </btn>
+            </template>
+          <v-list color="black">
+            <v-list-item>
+              <v-list-item-title>
+                <router-link
+                to ="/wishlist" style="color:#fff; text-decoration: none;"> Wish List</router-link>
+              </v-list-item-title>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-title>
+                <a v-on:click="logOut" style="color:#fff; list-style:none; margin-top:10px;"> Log Out</a>
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+          </v-menu>
           </v-tab>
           </div>
         </v-container>
