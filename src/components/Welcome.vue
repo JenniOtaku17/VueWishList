@@ -71,25 +71,27 @@
         </div>
     </v-col>
     <!--Social Buttons -->
+
     <v-divider style="margin:10%;"></v-divider>
-    <div class="text-center" style="margin: 10%; margin-bottom:200px; height:150px">
+
+    <div class="text-center" style="margin: 10%; margin-bottom:20%; height:150px">
 
             <v-col>
               <strong>ABOUT US</strong>
               <div class="caption mb-2">
                 Founders
               </div>
-              <v-avatar>
+              <v-avatar size="100">
                 <v-img
                   src="https://avataaars.io/?avatarStyle=Circle&topType=LongHairFrida&accessoriesType=Kurt&hairColor=Red&facialHairType=BeardLight&facialHairColor=BrownDark&clotheType=GraphicShirt&clotheColor=Gray01&graphicType=Skull&eyeType=Wink&eyebrowType=RaisedExcitedNatural&mouthType=Disbelief&skinColor=Brown"
                 ></v-img>
               </v-avatar>
-              <v-avatar>
+              <v-avatar size="100">
                 <v-img
                   src="https://avataaars.io/?avatarStyle=Circle&topType=ShortHairFrizzle&accessoriesType=Prescription02&hairColor=Black&facialHairType=MoustacheMagnum&facialHairColor=BrownDark&clotheType=BlazerSweater&clotheColor=Black&eyeType=Default&eyebrowType=FlatNatural&mouthType=Default&skinColor=Tanned"
                 ></v-img>
               </v-avatar>
-              <v-avatar>
+              <v-avatar size="100">
                 <v-img
                   src="https://avataaars.io/?avatarStyle=Circle&topType=LongHairMiaWallace&accessoriesType=Sunglasses&hairColor=BlondeGolden&facialHairType=Blank&clotheType=BlazerSweater&eyeType=Surprised&eyebrowType=RaisedExcited&mouthType=Smile&skinColor=Pale"
                 ></v-img>
