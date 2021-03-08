@@ -7,12 +7,12 @@
     >
     <template>
       <v-tabs v-if="user" >
-        <v-tab><router-link to ="/welcome" style="color:#fff; text-decoration: none;"><v-icon style="font-size:45px;">mdi-movie-open-star-outline</v-icon></router-link></v-tab>
+        <v-tab><router-link to ="/welcome" style="color:#fff; text-decoration: none;"><v-icon style="font-size:45px;" >mdi-home</v-icon></router-link></v-tab>
         <v-container v-if="user.loggedIn">
           <div style="float:right;">
           <v-tab style="float:left;">
              <router-link to ="/home" style="color:#fff; text-decoration: none;margin-top:10px;">
-              <v-icon>mdi-movie-search</v-icon> MOVIES</router-link>
+              <v-icon>mdi-movie-open-star-outline</v-icon> MOVIES</router-link>
           </v-tab>
           <v-tab style="float:right">
           <v-menu 
