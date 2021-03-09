@@ -48,6 +48,18 @@
 
       <v-list dense>
         <v-container v-if="user.loggedIn">
+
+          <v-list-item>
+            <v-list-item-icon>
+              <v-icon color="light-blue" >mdi-account-cog</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title class="font-weight-regular">
+                  <router-link to ="/profile" style="color:#fff; text-decoration: none;margin-top:10px;">My Profile</router-link>
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
           <v-list-item>
             <v-list-item-icon>
               <v-icon color="light-blue" >mdi-movie-open-star-outline</v-icon>

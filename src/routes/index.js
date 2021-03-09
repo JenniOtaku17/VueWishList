@@ -5,6 +5,7 @@ import Authenticate from '../components/Authenticate';
 import WishList from '../components/WishList';
 import Home from '../components/Home';
 import Welcome from '../components/Welcome';
+import Profile from '../components/Profile';
 
 import store from '../store';
 
@@ -43,6 +44,12 @@ const router = new VueRouter({
             name: 'Authenticate',
             component: Authenticate
             
+        },
+        {
+            path: '/profile',
+            name: 'Profile',
+            component: Profile,
+            beforeEnter: redirectIfNotAuth
         },
         {
             path: '/wishlist',
