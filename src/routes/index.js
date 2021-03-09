@@ -4,7 +4,7 @@ import VueRouter from 'vue-router';
 import Authenticate from '../components/Authenticate';
 import WishList from '../components/WishList';
 import Home from '../components/Home';
-import Welcome from '../components/Welcome'
+import Welcome from '../components/Welcome';
 
 import store from '../store';
 

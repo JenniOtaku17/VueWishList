@@ -33,6 +33,21 @@
   </v-parallax>
     <!--Parallax -->
 
+  <!--Opciones de peliculas -->
+  <v-card style="border-radius:0;">
+      <v-tabs
+        background-color="light-blue darken-4"
+        center-active
+        centered
+        dark
+      >
+        <v-tab v-on:click="changeMovies('unwatched')">unseen</v-tab>
+        <v-tab v-on:click="changeMovies('watched')">seen</v-tab>
+
+      </v-tabs>
+  </v-card>
+  <!--Opciones de peliculas -->
+
   <v-container fluid class="ma-3">
     <v-row no-gutters v-if="movies.length">
         <v-col
@@ -57,19 +72,35 @@
                 <v-card-subtitle><i>Released date: {{ movie.release_date }}</i></v-card-subtitle>
                 <v-card-actions>
                 <v-btn
+                    color="red accent-4"
+                    text
+                    v-on:click="selectMovie(movie)">
+                    <v-icon>mdi-youtube</v-icon>Trailer
+                </v-btn>
+                <v-btn
                     color="grey darken-4"
                     text
                     v-on:click="deleteMovie(movie.id)"
                 >
                 <v-icon>mdi-trash-can</v-icon>Remove
                 </v-btn>
-                <v-btn
-                    color="red accent-4"
-                    text
-                v-on:click="selectMovie(movie)">
-                    <v-icon>mdi-youtube</v-icon>Trailer
-                </v-btn>
-                
+                <div v-if="moviesId.find(x => x.movieId == movie.id).state == 'unwatched'">
+                  <v-btn
+                      color="green accent-4"
+                      text
+                      v-on:click="changeState(movie, 'watched')">
+                      <v-icon>mdi-check-bold</v-icon>seen
+                  </v-btn>
+                </div>
+                <div v-else>
+                  <v-btn
+                      color="red accent-4"
+                      text
+                      v-on:click="changeState(movie, 'unwatched')">
+                      <v-icon>mdi-close-thick</v-icon>unseen
+                  </v-btn>
+                </div>
+
                 </v-card-actions>
             </v-card>
           <!--Peliculas -->
@@ -119,7 +150,8 @@
           movieToDelete: null,
           trailer: null,
           video: null,
-          dialogTrailer: false
+          dialogTrailer: false,
+          state: 'unwatched'
       }
     },    
     computed: {
@@ -158,19 +190,24 @@
                     dt.forEach(mv => {
                         moviesId.push({
                             id: mv.id,
-                            movieId : mv.data().movieId
+                            movieId : mv.data().movieId,
+                            state: mv.data().state
                         });
                     })
                     this.moviesId = moviesId;
 
                     let movies = []
                     this.moviesId.forEach( mv => {
+                      console.log(mv);
+                      console.log("this is the state "+mv.state);
+                      if(mv.state== this.state){
                         let id = mv.movieId;
                         let url = "https://api.themoviedb.org/3/movie/"+id+"?api_key=94dcae6139c7f599099691ea345952f0&language=en-US"
                         axios.get(url).then( result=> {
                             movies.push(result.data);
                         });
-                        
+                      } 
+
                     })
 
                 this.movies = movies;
@@ -196,7 +233,35 @@
                 this.dialogTrailer = true;
                 console.log(this.trailer);
             });
+        },
+        changeMovies(code){
+          this.movies = [];
+          this.state = code;
+          this.getMovies();
+        },
+        changeState(movie, state){
+          let movieToEdit = this.moviesId.find(x => x.movieId == movie.id);
+          console.log(movieToEdit.id);
+
+          if(state == 'watched'){   
+            let movieFromFirebase = this.$firebase.firestore().collection('users').doc(this.user.data.uid).collection("movies").doc(movieToEdit.id);
+            movieFromFirebase.update({
+              state: 'watched'
+            })
+            this.movies = [];
+            this.getMovies();
+
+          }else{            
+            let movieFromFirebase = this.$firebase.firestore().collection('users').doc(this.user.data.uid).collection("movies").doc(movieToEdit.id);
+            movieFromFirebase.update({
+              state: 'unwatched'
+            })
+            this.movies = [];
+            this.getMovies();
+
+          }
         }
+        
     }
   }
 </script>

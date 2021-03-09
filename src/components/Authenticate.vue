@@ -1,111 +1,116 @@
 <template>
-  <v-container fluid>
+  <div >
+    <v-parallax
+        height="905"
+        src="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg"
+    >
     <v-row>
-        <v-col class="text-align:center;">
-            <v-card width="40%" class="mx-auto my-15" style="padding:2%">
-                <!--Form switch -->
-                  <v-row
-                        align="center"
-                        justify="space-around"
-                    >
-                        <v-btn
-                        text
-                        color="primary"
-                        v-on:click="changeForm(false)">
-                        Login
-                        </v-btn>
-                        <v-divider
-                        vertical
-                        ></v-divider>
-                            <v-btn
-                        text
-                        color="primary"
-                        v-on:click="changeForm(true)"
+            <v-col class="text-align:center;">
+                <v-card width="40%" class="mx-auto my-15" style="padding:3%;">
+                    <!--Form switch -->
+                    <v-row
+                            align="center"
+                            justify="space-around"
                         >
-                        Sign UP
+                            <v-btn
+                            text
+                            color="primary"
+                            v-on:click="changeForm(false)">
+                            Login
+                            </v-btn>
+                            <v-divider
+                            vertical
+                            ></v-divider>
+                                <v-btn
+                            text
+                            color="primary"
+                            v-on:click="changeForm(true)"
+                            >
+                            Sign UP
+                            </v-btn>
+                    </v-row>
+                    <!--Form switch -->
+
+                    <br>
+                    <v-divider></v-divider>
+                    <br>
+                    <div v-if="error" style="color:red; font-size:12px; margin-bottom:20px;">
+                        <span >*{{ error }}</span>
+                    </div>
+
+                    <!--SignUP Form -->
+                    <div v-if="signup" style="text-align: center;">
+                        <v-text-field
+                            v-model="formSignup.name"
+                            label="Name"
+                            required
+                        ></v-text-field>
+                        <v-text-field
+                            v-model="formSignup.email"
+                            label="Email"
+                            required
+                        ></v-text-field>
+                        <v-text-field
+                            v-model="formSignup.password"
+                            label="Password"
+                            :type="show ? 'text' : 'password'"
+                            :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+                            hint="At least 6 characters"
+                            @click:append="show = !show"
+                            required
+                        ></v-text-field>
+                        <v-text-field
+                            v-model="formSignup.confirm_password"
+                            label="Confirm Password"
+                            :type="show2 ? 'text' : 'password'"
+                            :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
+                            hint="At least 6 characters"
+                            @click:append="show2 = !show2"
+                            required
+                        ></v-text-field>
+                        <br>
+                        <v-btn
+                        block
+                        color="primary"
+                        elevation="3"
+                        v-on:click="register()">
+                        SAVE
                         </v-btn>
-                  </v-row>
-                  <!--Form switch -->
-                  
-                  <br>
-                  <v-divider></v-divider>
-                  <br>
-                  <div v-if="error" style="color:red; font-size:12px; margin-bottom:20px;">
-                      <span >*{{ error }}</span>
-                  </div>
+                    </div>
+                    <!--SignUP Form -->
 
-                  <!--SignUP Form -->
-                  <div v-if="signup" style="text-align: center;">
-                    <v-text-field
-                        v-model="formSignup.name"
-                        label="Name"
-                        required
-                    ></v-text-field>
-                    <v-text-field
-                        v-model="formSignup.email"
-                        label="Email"
-                        required
-                    ></v-text-field>
-                    <v-text-field
-                        v-model="formSignup.password"
-                        label="Password"
-                        :type="show ? 'text' : 'password'"
-                        :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-                        hint="At least 6 characters"
-                        @click:append="show = !show"
-                        required
-                    ></v-text-field>
-                    <v-text-field
-                        v-model="formSignup.confirm_password"
-                        label="Confirm Password"
-                        :type="show2 ? 'text' : 'password'"
-                        :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
-                        hint="At least 6 characters"
-                        @click:append="show2 = !show2"
-                        required
-                    ></v-text-field>
-                    <br>
-                    <v-btn
-                    block
-                    color="primary"
-                    elevation="3"
-                    v-on:click="register()">
-                    SAVE
-                    </v-btn>
-                  </div>
-                  <!--SignUP Form -->
+                    <!--Login Form -->
+                    <div v-else style="text-align: center;">
+                        <v-text-field
+                            v-model="formLogin.email"
+                            label="Email"
+                            required
+                        ></v-text-field>
+                        <v-text-field
+                            v-model="formLogin.password"
+                            label="Password"
+                            :type="show ? 'text' : 'password'"
+                            :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+                            hint="At least 6 characters"
+                            @click:append="show = !show"
+                            required
+                        ></v-text-field>
+                        <br>
+                        <v-btn
+                        block
+                        color="primary"
+                        elevation="3"
+                        v-on:click="login()">
+                        SAVE
+                        </v-btn>
+                    </div>
+                    <!--Login Form -->
 
-                  <!--Login Form -->
-                  <div v-else style="text-align: center;">
-                    <v-text-field
-                        v-model="formLogin.email"
-                        label="Email"
-                        required
-                    ></v-text-field>
-                    <v-text-field
-                        v-model="formLogin.password"
-                        label="Password"
-                        :type="show ? 'text' : 'password'"
-                        :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-                        hint="At least 6 characters"
-                        @click:append="show = !show"
-                        required
-                    ></v-text-field>
-                    <br>
-                    <v-btn
-                    block
-                    color="primary"
-                    elevation="3"
-                    v-on:click="login()">
-                    SAVE
-                    </v-btn>
-                  </div>
-                  <!--Login Form -->
-
-            </v-card>
-        </v-col>
-    </v-row>
-  </v-container>
+                </v-card>
+            </v-col>
+        </v-row>
+    </v-parallax>
+  </div>
 </template>
 
 <script>

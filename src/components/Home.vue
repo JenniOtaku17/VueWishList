@@ -127,7 +127,7 @@
               </v-btn>  
             </v-card-actions>
             <div style="position: absolute; bottom: 330px;">
-            <div><v-icon style="color:#F99D19;font-size:70px;">mdi-star</v-icon></div>
+            <div><v-icon style="color:#FF8F00;font-size:70px;">mdi-star</v-icon></div>
             <div style="font-size: 12px;position: absolute; bottom: 23px; left: 27px;"><span>{{ movie.vote_average }}</span></div>
             </div>
           </v-card>
@@ -136,7 +136,7 @@
         </v-hover>
         </v-col>
 
-        <v-dialog v-model="dialog" max-width="600" v-if="selectedMovie">
+        <v-dialog v-model="dialog" max-width="600px" v-if="selectedMovie">
 
               <v-card class="mx-auto my-12">
                 <v-toolbar
@@ -175,7 +175,7 @@
               </v-card>
           </v-dialog>
 
-          <v-dialog v-model="dialogTrailer" max-width="1000" 
+          <v-dialog v-model="dialogTrailer" max-width="1000px" 
           v-if="trailer">
 
               <v-card class="mx-auto my-12">
@@ -197,9 +197,8 @@
               </v-card>
           </v-dialog>
           
-          <v-dialog v-model="dialogSimilar" max-width="1200" 
-          v-if="similarMovies" style="height: 600px!important;">
-              <v-card class="mx-auto my-12">
+          <v-dialog v-model="dialogSimilar" max-width="1250px" v-if="similarMovies">
+              <v-card class="mx-auto my-12" style="height:600px;">
                 <v-toolbar
                   dark
                   color="black"
@@ -213,13 +212,13 @@
                   </v-btn>
                   <v-card-title>Similar Movies</v-card-title>
                 </v-toolbar>
-                
+                <br>
+                <v-container>
                   <v-slide-group
                     class="pa-4"
-                     active-class="success"
+                    
                     show-arrows
                   >
-
                   <v-slide-item v-for="movie in similarMovies" :key="movie.id">
                     <v-card width="350" height="400" style="margin-bottom:5%;">
                       <span v-if="movie.poster_path">
@@ -286,6 +285,7 @@
                   </v-slide-item>
 
                   </v-slide-group>
+                </v-container>
               </v-card>
           </v-dialog>
 
@@ -322,7 +322,8 @@
         selectedMovie: null,
         wishtlist:null,
         movieToAdd: {
-          movieId : null
+          movieId : null,
+          state: 'unwatched'
         },
         moviesId: null,
         trailer: null,
